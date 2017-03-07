@@ -28,10 +28,10 @@
     var origgame = {
         h: 400, w: 400,
         enemy: {
-            h: 20, w:20, x: 150, y: 150, speedY: 5, speedX: 0, color: 'red'
+            h: 20, w:20, x: 150, y: 150, speedY: 11, speedX: 0, color: 'red'
         },
         player: {
-            h: 20, w:20, x: 10, y: 150, speedY: 0, speedX: 5, color: 'blue'
+            h: 20, w:20, x: 10, y: 150, speedY: 0, speedX: 17, color: 'blue'
         },
         goal: {
             h: 20, w:20, x: 350, y: 150, speedY: 0, speedX: 0, color: 'green'
@@ -60,11 +60,35 @@
     function updateObj (obj) {
         obj.x += obj.speedX;
         obj.y += obj.speedY;
+        if (obj.x + obj.w/2 > game.w || obj.x - obj.w/2 < 0) {
+            obj.speedX *= -1;
+        }
+        if (obj.y + obj.h/2 > game.h || obj.y - obj.h/2 < 0) {
+            obj.speedY *= -1;
+        }
+    }
+
+    function checkCollision (obj1, obj2) {
+        var case1 = false, case2 = false;
+        if (Math.abs(obj1.x - obj2.x) < (obj1.w/2 + obj2.w/2)) {
+            case1 = true;
+        }
+
+        if (Math.abs(obj1.y - obj2.y) < (obj1.h/2 + obj2.h/2)) {
+            case2 = true;
+        }
+
+        return case1 && case2;
+
     }
 
     function update () {
+        if (checkCollision(game.player, game.enemy)) {
+            game.over = true;
+        }
         updateObj(game.player);
         updateObj(game.enemy);
+
     }
 
     document.body.appendChild(canvas);
